@@ -16,15 +16,36 @@ class BlueskyApi
 		$this->apiUri = $api_uri;
 
 		if (($handle) && ($app_password)) {
-			// GET DID AND API KEY FROM HANDLE AND APP PASSWORD
-			$args = [
-				'identifier' => $handle,
-				'password' => $app_password,
-			];
-			$data = $this->request('POST', 'com.atproto.server.createSession', $args);
+						// check for refresh token
+
+			if(isset($_SESSION['refreshJwt'])) {
+				$this->apiKey = $_SESSION['refreshJwt'];
+				$args = [
+					'identifier' => $handle,
+					'password' => $app_password,
+					'refreshJwt' => $this->apiKey,
+				];
+				$data = $this->request('POST', 'com.atproto.server.refreshSession');
+				if(isset($data->error)) {
+					$args = [
+						'identifier' => $handle,
+						'password' => $app_password,
+					];
+					$data = $this->request('POST', 'com.atproto.server.createSession', $args);
+				}
+			} else {
+				$args = [
+					'identifier' => $handle,
+					'password' => $app_password,
+				];
+				$data = $this->request('POST', 'com.atproto.server.createSession', $args);
+			}
 
 			$this->accountDid = $data->did;
 			$this->apiKey = $data->accessJwt;
+			$this->refreshToken = $data->refreshJwt;
+
+			$_SESSION['refreshJwt'] = $this->refreshToken;
 		}
 	}
 
