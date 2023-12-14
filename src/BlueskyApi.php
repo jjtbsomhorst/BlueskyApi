@@ -19,11 +19,11 @@ class BlueskyApi
 						// check for refresh token
 
 			if(isset($_SESSION['refreshJwt'])) {
-				$this->apiKey = $_SESSION['refreshJwt'];
+				$this->refreshToken = $_SESSION['refreshJwt'];
 				$args = [
 					'identifier' => $handle,
 					'password' => $app_password,
-					'refreshJwt' => $this->apiKey,
+					'refreshJwt' => $this->refreshToken,
 				];
 				$data = $this->request('POST', 'com.atproto.server.refreshSession');
 				if(isset($data->error)) {
