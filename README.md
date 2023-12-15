@@ -2,7 +2,7 @@
 
 Modified version of the simple class for making requests to the Bluesky API/AT protocol.  Not affiliated with Bluesky.
 
-This version saves the refresh token received from the API to a session variable so that it can the session can be refreshed via `com.atproto.server.refreshSession` rather than always creating a new session. This will help to avoid hitting rate limits on the `com.atproto.server.createSession` endpoint depending on how you are using the library.
+This version saves the refresh token received from the API to a PHP session variable so that it can reuse the session can be refreshed via `com.atproto.server.refreshSession` rather than always creating a new session. This will help to avoid hitting rate limits on the `com.atproto.server.createSession` endpoint depending on how you are using the library.
 
 ## Usage
 
