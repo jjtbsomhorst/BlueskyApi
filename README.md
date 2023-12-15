@@ -1,6 +1,8 @@
 # BlueskyApi
 
-Simple class for making requests to the Bluesky API/AT protocol.  Not affiliated with Bluesky.
+Modified version of the simple class for making requests to the Bluesky API/AT protocol.  Not affiliated with Bluesky.
+
+This version saves the refresh token received from the API to a session variable so that it can the session can be refreshed via `com.atproto.server.refreshSession` rather than always creating a new session. This will help to avoid hitting rate limits on the `com.atproto.server.createSession` endpoint depending on how you are using the library.
 
 ## Usage
 
@@ -51,17 +53,11 @@ $response = $bluesky->request('POST', 'com.atproto.repo.createRecord', $args);
 
 ## Installation
 
-Simply add a dependency on cjrasmussen/bluesky-api to your composer.json file if you use [Composer](https://getcomposer.org/) to manage the dependencies of your project:
-
-```sh
-composer require cjrasmussen/bluesky-api
-```
-
-Although it's recommended to use Composer, you can actually include the file(s) any way you want.
+Copy and include the file(s) any way you want.
 
 ## Further Reference
 
-It's not much, but I do have some Bluesky API-related stuff [on my blog](https://cjr.dev/?s=bluesky). Additionally, there's an unofficial Discord for Bluesky API users with a [PHP-focused channel](https://discord.com/channels/1097580399187738645/1100721113702608999).
+There's an unofficial Discord for Bluesky API users with a [PHP-focused channel](https://discord.com/channels/1097580399187738645/1100721113702608999).
 
 ## License
 
