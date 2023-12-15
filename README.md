@@ -57,7 +57,7 @@ Copy and include the file(s) any way you want.
 
 ## Further Reference
 
-There's an unofficial Discord for Bluesky API users with a [PHP-focused channel](https://discord.com/channels/1097580399187738645/1100721113702608999).
+See the original repo [here](https://github.com/cjrasmussen/BlueskyApi).
 
 ## License
 
