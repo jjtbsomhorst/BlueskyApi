@@ -15,38 +15,26 @@ class BlueskyApi
 	{
 		$this->apiUri = $api_uri;
 
-		if (($handle) && ($app_password)) {
-						// check for refresh token
-
-			if(isset($_SESSION['refreshJwt'])) {
-				$this->refreshToken = $_SESSION['refreshJwt'];
-				$args = [
-					'identifier' => $handle,
-					'password' => $app_password,
-					'refreshJwt' => $this->refreshToken,
-				];
-				$data = $this->request('POST', 'com.atproto.server.refreshSession');
-				if(isset($data->error)) {
-					$args = [
-						'identifier' => $handle,
-						'password' => $app_password,
-					];
-					$data = $this->request('POST', 'com.atproto.server.createSession', $args);
-				}
-			} else {
-				$args = [
-					'identifier' => $handle,
-					'password' => $app_password,
-				];
-				$data = $this->request('POST', 'com.atproto.server.createSession', $args);
-			}
-
-			$this->accountDid = $data->did;
-			$this->apiKey = $data->accessJwt;
-			$this->refreshToken = $data->refreshJwt;
-
-			$_SESSION['refreshJwt'] = $this->refreshToken;
-		}
+		if (isset($handle, $app_password)) {
+	            $args = [
+	                'identifier' => $handle,
+	                'password' => $app_password,
+	            ];
+	
+	            if (isset($_SESSION['refreshJwt'])) {
+	                $args['refreshJwt'] = $_SESSION['refreshJwt'];
+	                $data = $this->request('POST', 'com.atproto.server.refreshSession');
+	                if (isset($data->error)) {
+	                    $data = $this->request('POST', 'com.atproto.server.createSession', $args);
+	                }
+	            } else {
+	                $data = $this->request('POST', 'com.atproto.server.createSession', $args);
+	            }
+	
+	            $this->accountDid = $data->did;
+	            $this->apiKey = $data->accessJwt;
+	            $_SESSION['refreshJwt'] = $data->refreshJwt;
+	        }
 	}
 
 	/**
