@@ -14,27 +14,26 @@ class BlueskyApi
 	public function __construct(?string $handle = null, ?string $app_password = null, string $api_uri = 'https://bsky.social/xrpc/')
 	{
 		$this->apiUri = $api_uri;
+		$args = [
+			'identifier' => $handle,
+			'password' => $app_password,
+		];
+		$token = dirname(__FILE__) . '/whatever_file_name.txt';
 
-		if (isset($handle, $app_password)) {
-	            $args = [
-	                'identifier' => $handle,
-	                'password' => $app_password,
-	            ];
-	
-	            if (isset($_SESSION['refreshJwt'])) {
-	                $args['refreshJwt'] = $_SESSION['refreshJwt'];
-	                $data = $this->request('POST', 'com.atproto.server.refreshSession');
-	                if (isset($data->error)) {
-	                    $data = $this->request('POST', 'com.atproto.server.createSession', $args);
-	                }
-	            } else {
-	                $data = $this->request('POST', 'com.atproto.server.createSession', $args);
-	            }
-	
-	            $this->accountDid = $data->did;
-	            $this->apiKey = $data->accessJwt;
-	            $_SESSION['refreshJwt'] = $data->refreshJwt;
-	        }
+		if (file_exists($token)) {
+	        	$refreshJwt = file_get_contents($token);
+			$this->apiKey = $refreshJwt;
+			$data = $this->request('POST', 'com.atproto.server.refreshSession');
+			if(isset($data->error)) {
+				$data = $this->request('POST', 'com.atproto.server.createSession', $args);
+			}
+		} else {
+			$data = $this->request('POST', 'com.atproto.server.createSession', $args);
+		}
+
+		$this->accountDid = $data->did;
+		$this->apiKey = $data->accessJwt;
+		file_put_contents($token, $data->refreshJwt);
 	}
 
 	/**
