@@ -21,8 +21,7 @@ class BlueskyApi
 		$token = dirname(__FILE__) . '/whatever_file_name.txt';
 
 		if (file_exists($token)) {
-	        	$refreshJwt = file_get_contents($token);
-			$this->apiKey = $refreshJwt;
+	        	$this->apiKey = file_get_contents($token);
 			$data = $this->request('POST', 'com.atproto.server.refreshSession');
 			if(isset($data->error)) {
 				$data = $this->request('POST', 'com.atproto.server.createSession', $args);
