@@ -2,16 +2,22 @@
 
 namespace cjrasmussen\BlueskyApi;
 
+use cjrasmussen\BlueskyApi\Traits\ServerRequests;
+use cjrasmussen\BlueskyApi\Traits\RepoRequests;
+
 /**
  * Class for interacting with the Bluesky API/AT protocol
  */
 class BlueskyApi
 {
+    use ServerRequests;
+    use RepoRequests;
+
 	private ?string $accountDid = null;
 	private ?string $apiKey = null;
 	private string $apiUri;
 
-	public function __construct(?string $handle = null, ?string $app_password = null, string $api_uri = 'https://bsky.social/xrpc/')
+	public function __construct(protected readonly ?string $handle = null, protected readonly ?string $app_password = null, protected readonly string $api_uri = 'https://bsky.social/xrpc/')
 	{
 		$this->apiUri = $api_uri;
 		$args = [
