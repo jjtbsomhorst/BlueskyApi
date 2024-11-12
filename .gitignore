@@ -1,4 +1,7 @@
 .idea
 vendor
 composer
-tests/.env
+*/.env
+.env.backup
+.env.production
+.phpunit.result.cache

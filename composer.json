@@ -28,7 +28,14 @@
       "cjrasmussen\\BlueskyApi\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
   "require-dev": {
-    "phpunit/phpunit": "^11.4"
+    "phpunit/phpunit": "^11.4",
+    "fakerphp/faker": "^1.24",
+    "symfony/dotenv": "^7.1"
   }
 }
