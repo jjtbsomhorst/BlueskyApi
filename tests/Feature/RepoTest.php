@@ -7,24 +7,25 @@ use cjrasmussen\BlueskyApi\Exceptions\ClientException;
 use cjrasmussen\BlueskyApi\Utils;
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Dotenv\Dotenv;
 
 class RepoTest extends TestCase
 {
-
     private BlueskyApi $client;
 
     #[Before]
     public function setUp(): void
     {
-        $dotEnv = new Dotenv();
-        $dotEnv->load(__DIR__ . '/../.env');
+        $dotEnv = new Dotenv;
+        $dotEnv->load(__DIR__.'/../.env');
         $this->client = new BlueskyApi($_ENV['BLUESKY_USERNAME'], $_ENV['BLUESKY_PASSWORD']);
         $this->faker = Factory::create(['nl_NL']);
     }
 
-    public function testDeleteRecord()
+    #[Test]
+    public function deleteRecord()
     {
         $this->expectException(ClientException::class);
         $response = $this->client->createPost('Dit is een test', languages: ['nl'], createdAt: null, recordKey: null);
@@ -33,17 +34,26 @@ class RepoTest extends TestCase
         $this->client->getRecord($recordKey);
     }
 
-    public function testListRecords()
+    #[Test]
+    public function listRecords()
     {
-        self::fail();
+        $records = $this->client->listRecords(10);
+        self::assertNotNull($records);
     }
 
-    public function testGetRecord()
+    #[Test]
+    public function getRecord()
     {
-        self::fail();
+        $response = $this->client->createPost(bodyText: $this->faker->text(300), languages: ['nl'], createdAt: null, recordKey: null);
+        self::assertNotNull($response);
+        self::assertObjectHasProperty('uri', $response);
+        self::assertObjectHasProperty('cid', $response);
+        self::assertObjectHasProperty('commit', $response);
+        self::assertNotNull(Utils::getRecordKeyFromRecord($response));
     }
 
-    public function testCreateAndDeletePost()
+    #[Test]
+    public function createPost()
     {
         $response = $this->client->createPost(bodyText: 'Dit is een testje', languages: ['nl'], createdAt: null, recordKey: null);
         self::assertNotNull($response);
@@ -55,11 +65,15 @@ class RepoTest extends TestCase
         $this->client->deleteRecord($recordKey);
     }
 
-    public function testUploadBlob()
+    #[Test]
+    public function UploadBlob()
     {
-        self::fail();
+        $response = $this->client->uploadBlob(imageData: file_get_contents(__DIR__.'/../Assets/logo.jpg'), contentType: 'image/jpeg');
+        self::assertNotNull($response);
+        self::assertObjectHasProperty('blob', $response);
     }
 
+    #[Test]
     public function testRecordUtil()
     {
         $recordUri = 'at://did:plc:t42ay7zpgsyawmcg3vmezkka/app.bsky.feed.post/3laox6pktm426';

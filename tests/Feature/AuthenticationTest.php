@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use cjrasmussen\BlueskyApi\BlueskyApi;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
+
 use function PHPUnit\Framework\assertNotNull;
 
 class AuthenticationTest extends TestCase

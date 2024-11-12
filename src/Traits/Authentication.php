@@ -8,12 +8,17 @@ use Psr\Http\Client\ClientExceptionInterface;
 trait Authentication
 {
     private ?object $activeSession;
+
     private ?string $identifier;
+
     private ?string $password;
+
     private ?string $accountDid;
 
     const CREATE_SESSION = 'com.atproto.server.createSession';
+
     const REFRESH_SESSION = 'com.atproto.server.refreshSession';
+
     const GET_SESSION = 'com.atproto.server.getSession';
 
     /**
@@ -26,6 +31,7 @@ trait Authentication
             'identifier' => $handle,
             'password' => $password,
         ];
+
         return $this->sendRequest(method: 'POST', lexicon: self::CREATE_SESSION, body: $args);
     }
 
@@ -35,7 +41,7 @@ trait Authentication
      */
     public function refreshSession(string $refreshToken): \stdClass
     {
-        return $this->sendRequest('POST', self::REFRESH_SESSION, [], '', null, ['Authorization' => 'Bearer ' . $refreshToken]);
+        return $this->sendRequest('POST', self::REFRESH_SESSION, [], '', null, ['Authorization' => 'Bearer '.$refreshToken]);
     }
 
     /**
@@ -45,6 +51,7 @@ trait Authentication
     public function getSession(): \stdClass
     {
         $this->authenticate();
+
         return $this->sendRequest('GET', self::GET_SESSION, []);
     }
 
@@ -69,6 +76,7 @@ trait Authentication
             } else {
                 try {
                     $this->getSession();
+
                     return;
                 } catch (\Throwable $t) {
                     $this->authenticate(true);

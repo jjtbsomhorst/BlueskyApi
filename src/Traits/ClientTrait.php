@@ -2,6 +2,8 @@
 
 namespace cjrasmussen\BlueskyApi\Traits;
 
+use cjrasmussen\BlueskyApi\Exceptions\ClientException as ClientException;
+use cjrasmussen\BlueskyApi\Exceptions\ServerException as ServerException;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
@@ -11,8 +13,6 @@ use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use cjrasmussen\BlueskyApi\Exceptions\ClientException as ClientException;
-use cjrasmussen\BlueskyApi\Exceptions\ServerException as ServerException;
 use stdClass;
 
 trait ClientTrait
@@ -20,11 +20,12 @@ trait ClientTrait
     use Authentication;
 
     const CONTENT_TYPE_APPLICATION_JSON = 'application/json';
+
     private ClientInterface $client;
 
     private function initClient(string $baseUrl): void
     {
-        $config = ['base_uri' => str_ends_with($baseUrl, "/") ? $baseUrl : $baseUrl . "/"];
+        $config = ['base_uri' => str_ends_with($baseUrl, '/') ? $baseUrl : $baseUrl.'/'];
         $this->client = new Client($config);
     }
 
@@ -34,13 +35,15 @@ trait ClientTrait
      * @throws ClientException
      * @throws ServerException
      */
-    public function sendRequest(string $method, string $lexicon, array|string|null $body, ?string $content_type = self::CONTENT_TYPE_APPLICATION_JSON, ?array $headers = null, array $query = null): ?stdClass
+    public function sendRequest(string $method, string $lexicon, array|string|null $body, ?string $content_type = self::CONTENT_TYPE_APPLICATION_JSON, ?array $headers = null, ?array $query = null): ?stdClass
     {
         $request = $this->buildRequest($method, $lexicon, $query, $body, $content_type, $headers);
         $response = $this->client->sendRequest($request);
         $this->validateResponse($response);
+
         return json_decode($response->getBody(), flags: JSON_THROW_ON_ERROR);
     }
+
     /**
      * @throws JsonException
      * @throws Exception
@@ -48,16 +51,16 @@ trait ClientTrait
     private function buildRequest(string $method, string $lexicon, ?array $query, array|string|null $body, ?string $content_type, ?array $headers): RequestInterface
     {
         if (isset($query) && count($query)) {
-            $lexicon = $lexicon .'?'.http_build_query($query);
+            $lexicon = $lexicon.'?'.http_build_query($query);
         }
 
         $request = new Request($method, $lexicon);
         if (isset($this->activeSession->accessJwt)) {
-            $request = $request->withHeader('Authorization', 'Bearer ' . $this->activeSession->accessJwt);
+            $request = $request->withHeader('Authorization', 'Bearer '.$this->activeSession->accessJwt);
         }
 
         if ($method === 'POST') {
-            $contentType = !empty($content_type) ? $content_type : self::CONTENT_TYPE_APPLICATION_JSON;
+            $contentType = ! empty($content_type) ? $content_type : self::CONTENT_TYPE_APPLICATION_JSON;
             $request = $request->withHeader('Content-Type', $contentType);
 
             if (empty($body)) {
@@ -77,6 +80,7 @@ trait ClientTrait
                 $request = $request->withHeader($key, $value);
             }
         }
+
         return $request;
     }
 
