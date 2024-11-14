@@ -3,9 +3,11 @@
 namespace Tests\Feature;
 
 use cjrasmussen\BlueskyApi\BlueskyApi;
+use Faker\Factory;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
+use Symfony\Component\Dotenv\Dotenv;
 use function PHPUnit\Framework\assertNotNull;
 
 class AuthenticationTest extends TestCase
@@ -13,7 +15,10 @@ class AuthenticationTest extends TestCase
     #[Before]
     public function setUp(): void
     {
-        $this->client = new BlueskyApi('j.somhorst+dev@gmail.com', 'wvh4-gw2z-xcs3-byb2');
+        $dotEnv = new Dotenv;
+        $dotEnv->load(__DIR__.'/../.env');
+        $this->client = new BlueskyApi($_ENV['BLUESKY_USERNAME'], $_ENV['BLUESKY_PASSWORD']);
+        $this->faker = Factory::create(['nl_NL']);
     }
 
     public function testGetAccountDid()
