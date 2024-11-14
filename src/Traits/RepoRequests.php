@@ -3,6 +3,8 @@
 namespace cjrasmussen\BlueskyApi\Traits;
 
 use Carbon\Carbon;
+use cjrasmussen\BlueskyApi\Exceptions\ClientException;
+use cjrasmussen\BlueskyApi\Exceptions\ServerException;
 use DateTimeInterface;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -31,6 +33,10 @@ trait RepoRequests
 
     const RECORD_TYPE_BSKY_FEED_POST = 'app.bsky.feed.post';
 
+    /**
+     * @throws ClientExceptionInterface
+     * @throws JsonException
+     */
     private function getDefaultArgs(): array
     {
         return [
@@ -40,8 +46,14 @@ trait RepoRequests
     }
 
     /**
+     * @param array<string>|null $languages
+     * @param array<object> $facets
+     * @param array<object> $embeds
+     * @param array<object> $tags
      * @throws ClientExceptionInterface
      * @throws JsonException
+     * @throws ClientException
+     * @throws ServerException
      */
     public function createPost(string $bodyText, ?array $languages, ?Carbon $createdAt, ?string $recordKey, array $facets = [], array $embeds = [], array $tags = []): \stdClass
     {
@@ -66,19 +78,24 @@ trait RepoRequests
     }
 
     /**
+     * @throws ClientException
      * @throws ClientExceptionInterface
      * @throws JsonException
+     * @throws ServerException
      */
     public function getRecord(string $recordKey): \stdClass
     {
         $args = $this->getDefaultArgs();
         $args['rkey'] = $recordKey;
+
         return $this->sendRequest('GET', lexicon: self::GET_RECORD, body: null, query: $args);
     }
 
     /**
+     * @throws ClientException
      * @throws ClientExceptionInterface
      * @throws JsonException
+     * @throws ServerException
      */
     public function deleteRecord(string $recordKey): void
     {
@@ -88,8 +105,10 @@ trait RepoRequests
     }
 
     /**
+     * @throws ClientException
      * @throws ClientExceptionInterface
      * @throws JsonException
+     * @throws ServerException
      */
     public function listRecords(int $limit = 50, ?string $did = null): \stdClass
     {
@@ -104,8 +123,10 @@ trait RepoRequests
     }
 
     /**
+     * @throws ClientException
      * @throws ClientExceptionInterface
      * @throws JsonException
+     * @throws ServerException
      */
     public function uploadBlob(string $imageData, string $contentType): \stdClass
     {
