@@ -1,10 +1,17 @@
 # BlueskyApi
 
 Modified version of the simple class for making requests to the Bluesky API/AT protocol.  Not affiliated with Bluesky.
-This version uses Guzzle to do the requests. It will throw exceptions when the request returned an error instead of just
-returning the body itself. 
+This version uses Guzzle to do the requests. Some minor changes: 
 
-Also, it features some basic helper methods to do requests so you don't have to invent the wheel yourself. 
+- It will throw exceptions when the request returned an error instead of just
+- It uses Guzzle instead of curl requests
+- Features some basic helper methods to do requests so you don't have to invent the wheel yourself. 
+
+Features I plan to implement
+
+- Support for lexicon types from atproto (see: https://github.com/bluesky-social/atproto/). This way when used, and you
+don't know the atproto protocol you don't have to guess the response properties.
+- Some more testing
 
 ## Usage
 
