@@ -46,10 +46,11 @@ trait RepoRequests
     }
 
     /**
-     * @param array<string>|null $languages
-     * @param array<object> $facets
-     * @param array<object> $embeds
-     * @param array<object> $tags
+     * @param  array<string>|null  $languages
+     * @param  array<object>  $facets
+     * @param  array<object>  $embeds
+     * @param  array<object>  $tags
+     *
      * @throws ClientExceptionInterface
      * @throws JsonException
      * @throws ClientException

@@ -6,8 +6,8 @@ use cjrasmussen\BlueskyApi\BlueskyApi;
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
-
 use Symfony\Component\Dotenv\Dotenv;
+
 use function PHPUnit\Framework\assertNotNull;
 
 class AuthenticationTest extends TestCase
