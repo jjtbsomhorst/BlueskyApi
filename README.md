@@ -1,13 +1,22 @@
 # BlueskyApi
 
 Modified version of the simple class for making requests to the Bluesky API/AT protocol.  Not affiliated with Bluesky.
+This version uses Guzzle to do the requests. Some minor changes: 
 
-This version saves the refresh token received from the API to a file so that it can reuse the session – this is refreshed via `com.atproto.server.refreshSession` rather than always creating a new session. This will help to avoid hitting rate limits on the `com.atproto.server.createSession` endpoint depending on how you are using the library.
+- It will throw exceptions when the request returned an error instead of just
+- It uses Guzzle instead of curl requests
+- Features some basic helper methods to do requests so you don't have to invent the wheel yourself. 
+
+Features I plan to implement
+
+- Support for lexicon types from atproto (see: https://github.com/bluesky-social/atproto/). This way when used, and you
+don't know the atproto protocol you don't have to guess the response properties.
+- Some more testing
 
 ## Usage
 
 ```php
-use cjrasmussen\BlueskyApi\BlueskyApi;
+use cjrasmussen\BlueskyApi\Traits\BlueskyApi;
 
 $bluesky = new BlueskyApi($handle, $app_password);
 
