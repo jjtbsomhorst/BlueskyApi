@@ -57,7 +57,6 @@ class AuthenticationTest extends TestCase
     {
         $salt = $this->faker->text(5);
         $cacheMock = $this->createMock(CacheInterface::class);
-        // TODO Repair / Fix / Maak af
         $this->client->setSalt($salt);
         $this->client->setCache($cacheMock);
         $this->client->authenticate();
