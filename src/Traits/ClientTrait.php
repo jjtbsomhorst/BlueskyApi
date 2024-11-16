@@ -63,15 +63,13 @@ trait ClientTrait
             $contentType = ! empty($content_type) ? $content_type : self::CONTENT_TYPE_APPLICATION_JSON;
             $request = $request->withHeader('Content-Type', $contentType);
 
-            if (empty($body)) {
-                throw new Exception('No body specified?');
-            }
-
-            if (strtolower($contentType) === self::CONTENT_TYPE_APPLICATION_JSON) {
-                $streamInterface = is_string($body) ? Utils::streamFor($body) : Utils::streamFor(json_encode($body, JSON_THROW_ON_ERROR));
-                $request = $request->withBody($streamInterface);
-            } else {
-                $request = $request->withBody(Utils::streamFor($body));
+            if (! empty($body)) {
+                if (strtolower($contentType) === self::CONTENT_TYPE_APPLICATION_JSON) {
+                    $streamInterface = is_string($body) ? Utils::streamFor($body) : Utils::streamFor(json_encode($body, JSON_THROW_ON_ERROR));
+                    $request = $request->withBody($streamInterface);
+                } else {
+                    $request = $request->withBody(Utils::streamFor($body));
+                }
             }
         }
 

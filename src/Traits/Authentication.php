@@ -2,9 +2,6 @@
 
 namespace cjrasmussen\BlueskyApi\Traits;
 
-use JsonException;
-use Psr\Http\Client\ClientExceptionInterface;
-
 trait Authentication
 {
     private ?object $activeSession;
@@ -21,10 +18,6 @@ trait Authentication
 
     const GET_SESSION = 'com.atproto.server.getSession';
 
-    /**
-     * @throws JsonException
-     * @throws ClientExceptionInterface
-     */
     public function createSession(?string $handle, ?string $password): \stdClass
     {
         $args = [
@@ -35,55 +28,45 @@ trait Authentication
         return $this->sendRequest(method: 'POST', lexicon: self::CREATE_SESSION, body: $args);
     }
 
-    /**
-     * @throws ClientExceptionInterface
-     * @throws JsonException
-     */
     public function refreshSession(string $refreshToken): \stdClass
     {
-        return $this->sendRequest('POST', self::REFRESH_SESSION, [], '', null, ['Authorization' => 'Bearer '.$refreshToken]);
+        return $this->sendRequest(method: 'POST', lexicon: self::REFRESH_SESSION, body: '', headers: ['Authorization' => 'Bearer '.$refreshToken]);
     }
 
-    /**
-     * @throws ClientExceptionInterface
-     * @throws JsonException
-     */
     public function getSession(): \stdClass
     {
-        $this->authenticate();
-
         return $this->sendRequest('GET', self::GET_SESSION, []);
     }
 
-    /**
-     * @throws ClientExceptionInterface
-     * @throws JsonException
-     */
     public function authenticate(bool $refreshSession = false): void
     {
-        // check if we have a session
-        if (isset($this->activeSession)) {
+        if (! isset($this->activeSession)) {
+            $this->fromCache();
+            if (isset($this->activeSession)) {
+                $this->authenticate();
+            }
 
-            // check if that session is valid
-            if ($refreshSession) {
-                try {
-                    $this->activeSession = $this->refreshSession($this->activeSession->refreshJwt);
-                } catch (\Throwable $t) {
-                    // could not refresh, create a new session
-                    $this->activeSession = null;
-                    $this->authenticate();
-                }
-            } else {
-                try {
-                    $this->getSession();
-
-                    return;
-                } catch (\Throwable $t) {
-                    $this->authenticate(true);
-                }
+            $sessionData = $this->createSession($this->identifier, $this->password);
+            $this->toCache($sessionData);
+            $this->activeSession = $sessionData;
+        } else {
+            try {
+                $this->activeSession = $this->refreshSession($this->activeSession->refreshJwt);
+                $this->toCache($this->activeSession);
+            } catch (\Throwable $t) {
+                $this->clearSessionCache();
+                $this->activeSession = null;
+                $this->authenticate();
             }
         }
+    }
 
-        $this->activeSession = $this->createSession($this->identifier, $this->password);
+    public function getAccountDid(): ?string
+    {
+        if (! isset($this->activeSession)) {
+            $this->authenticate();
+        }
+
+        return $this->activeSession->did;
     }
 }

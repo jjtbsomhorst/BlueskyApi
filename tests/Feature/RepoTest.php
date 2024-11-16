@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Feature;
 
 use cjrasmussen\BlueskyApi\BlueskyApi;
 use cjrasmussen\BlueskyApi\Exceptions\ClientException;
@@ -78,6 +78,6 @@ class RepoTest extends TestCase
     {
         $recordUri = 'at://did:plc:t42ay7zpgsyawmcg3vmezkka/app.bsky.feed.post/3laox6pktm426';
         $rKey = Utils::getRecordKeyFromRecordUri($recordUri);
-        self::assertEquals($rKey, '3laox6pktm426');
+        self::assertEquals('3laox6pktm426', $rKey);
     }
 }
