@@ -5,3 +5,4 @@ composer
 .env.backup
 .env.production
 .phpunit.result.cache
+**/*.json
